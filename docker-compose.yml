@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  cf-bypass:
+    build: .
+    container_name: solver-nodejs
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - AUTH_KEY=     # isi kalau mau pakai auth
+    shm_size: '256mb'
+    cap_add:
+      - SYS_ADMIN
