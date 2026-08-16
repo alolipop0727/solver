@@ -417,7 +417,7 @@ async function solve({ url, mode, timeout, proxy }) {
     
     if (mode === 'html') {
       const html = await page.content().catch(() => '');
-      return html;
+      return { html, }
     }
 
     // cf_clearance + full
