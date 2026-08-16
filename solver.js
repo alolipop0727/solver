@@ -414,6 +414,11 @@ async function solve({ url, mode, timeout, proxy }) {
       const liveUA     = await page.evaluate(() => navigator.userAgent).catch(() => fp.ua);
       return { screenshot, cookies, user_agent: liveUA, fingerprint: fp.label };
     }
+    
+    if (mode === 'html') {
+      const html = await page.content().catch(() => '');
+      return html;
+    }
 
     // cf_clearance + full
     await navigateWithRetry(page, url, { waitUntil: 'domcontentloaded', timeout });
@@ -447,7 +452,6 @@ async function solve({ url, mode, timeout, proxy }) {
 
     const liveUA    = await page.evaluate(() => navigator.userAgent).catch(() => fp.ua);
     const cookieStr = cookies.map(c => `${c.name}=${c.value}`).join('; ');
-    const html = await page.content().catch(() => '');
 
     return {
       cookies,
@@ -460,7 +464,6 @@ async function solve({ url, mode, timeout, proxy }) {
         'cf-clearance': cf_clearance?.value || '',
       },
       fingerprint : fp.label,
-      html : html,
     };
 
   } catch (err) {
