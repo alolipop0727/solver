@@ -460,7 +460,7 @@ async function solve({ url, mode, timeout, proxy }) {
         'cf-clearance': cf_clearance?.value || '',
       },
       fingerprint : fp.label,
-      html
+      html : html,
     };
 
   } catch (err) {
