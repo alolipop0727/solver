@@ -414,11 +414,6 @@ async function solve({ url, mode, timeout, proxy }) {
       const liveUA     = await page.evaluate(() => navigator.userAgent).catch(() => fp.ua);
       return { screenshot, cookies, user_agent: liveUA, fingerprint: fp.label };
     }
-    
-    if (mode === 'html') {
-      const html = await page.content().catch(() => '');
-      return { html, }
-    }
 
     // cf_clearance + full
     await navigateWithRetry(page, url, { waitUntil: 'domcontentloaded', timeout });
@@ -448,6 +443,20 @@ async function solve({ url, mode, timeout, proxy }) {
         user_agent  : liveUA,
         fingerprint : fp.label,
       };
+    }
+    
+    if (mode === 'html') {
+    await navigateWithRetry(page, url, { waitUntil: 'domcontentloaded', timeout });
+    await simulateMouse(page);
+    await waitCFClear(page, timeout);
+    await sleep(randInt(1000, 2000));
+    await simulateMouse(page);
+    await page.setViewport({ width: 1366, height: 768, deviceScaleFactor: 1 });
+    await page.setUserAgent(fp.ua);
+    await hardenFingerprint(page, fp);
+    await setHeaders(page, fp);
+      const html = await page.content().catch(() => '');
+      return { html, }
     }
 
     const liveUA    = await page.evaluate(() => navigator.userAgent).catch(() => fp.ua);
